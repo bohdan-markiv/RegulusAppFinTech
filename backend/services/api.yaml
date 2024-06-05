@@ -1,0 +1,375 @@
+openapi: 3.0.0
+info:
+  title: CarsCDK
+  version: 1.0.0
+x-amazon-apigateway-request-validators:
+  all:
+    validateRequestBody: true
+    validateRequestParameters: true
+  body-only:
+    validateRequestBody: true
+    validateRequestParameters: false
+x-amazon-apigateway-request-validator: all
+paths:
+  /conversations:
+    get:
+      tags:
+        - All Conversations
+      summary: List all Conversations
+      description: List Conversations
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversations"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:get-conversations/invocations
+    post:
+      tags:
+        - Create new conversation
+      summary: Create new conversation
+      description: Create new conversation
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:post-conversations/invocations
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Max-Age:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+      x-amazon-apigateway-request-validator: "all"
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Max-Age: "'3600'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Email'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{"message": "CORS configuration successful"}'
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+        passthroughBehavior: "when_no_match"
+
+  /conversations/{conversation_id}:
+    get:
+      tags:
+        - Conversation by id
+      summary: List the Conversation
+      description: List the conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          description: Id of the conversation
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:get-conversations-id/invocations
+    post:
+      tags:
+        - Post new title for conversation
+      summary: Post new title for conversation
+      description: Post new title for conversation
+      requestBody:
+        description: Post a message
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Title"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:post-conversations-id/invocations
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Max-Age:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+      x-amazon-apigateway-request-validator: "all"
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Max-Age: "'3600'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Email'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{"message": "CORS configuration successful"}'
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+        passthroughBehavior: "when_no_match"
+
+  /conversations/{conversation_id}/message:
+    post:
+      tags:
+        - Post a message to conversation
+      summary: Post a message to conversation
+      description: Post a message to conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          description: Id of the conversation to return
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Post a message
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:post-message/invocations
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Max-Age:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+      x-amazon-apigateway-request-validator: "all"
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Max-Age: "'3600'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Email'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{"message": "CORS configuration successful"}'
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+        passthroughBehavior: "when_no_match"
+
+  /conversations/{conversation_id}/file:
+    post:
+      tags:
+        - Post a message to conversation
+      summary: Post a message to conversation
+      description: Post a message to conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          description: Id of the conversation to return
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Post a message
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileInput"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileOutput"
+        "405":
+          description: Invalid input
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:post-file/invocations
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Max-Age:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+      x-amazon-apigateway-request-validator: "all"
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Max-Age: "'3600'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Email'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{"message": "CORS configuration successful"}'
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+        passthroughBehavior: "when_no_match"
+
+components:
+  schemas:
+    Conversations:
+      type: object
+    Conversation:
+      type: object
+      required:
+        - id
+        - user_id
+        - messages
+        - title
+        - thread_id
+        - assistant_id
+      properties:
+        id:
+          type: string
+          example: new id
+        user_id:
+          type: string
+          example: admin
+        messages:
+          type: array
+        title:
+          type: string
+          example: NewChat
+        thread_id:
+          type: string
+          example: id
+        assistant_id:
+          type: string
+          example: id
+    Message:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        file:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+
+    FileInput:
+      type: object
+      required:
+        - filename
+      properties:
+        filename:
+          type: string
+
+    FileOutput:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Title:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string

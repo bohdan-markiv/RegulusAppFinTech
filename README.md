@@ -1,2 +1,2 @@
-# RegulusAppFinTech
-This is the final version of the Regulus App project by Bohdan Markiv for the course FinTech
+# RegulusProject
+This repository is created for the development of the Regulus AI project

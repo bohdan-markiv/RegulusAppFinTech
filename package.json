@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@aws-cdk/aws-lambda-python-alpha": "^2.143.0-alpha.0",
+    "aws-sdk": "^2.1632.0",
+    "axios": "^1.7.2"
+  }
+}
