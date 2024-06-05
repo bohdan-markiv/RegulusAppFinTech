@@ -6,6 +6,36 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+def get_secret():
+
+    secret_name = "aws-secret"
+    region_name = "eu-central-1"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except Exception as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+    final = json.loads(secret)
+    logger.info(final)
+    return {
+        "accessKeyId": final["accessKeyId"],
+        "secretAccessKey": final["secretAccessKey"]
+    }
+
+
 def transform_dynamodb_response(response):
     messages = []
     if response['messages'] != []:
@@ -56,6 +86,8 @@ def lambda_handler(event, _):
         logger.info(response)
         items = response.get('Items', [])[0]
         items = transform_dynamodb_response(items)
+        secret = get_secret()
+        items.update(secret)
 
     except Exception as e:
         logger.error(f"error - {e}", exc_info=True)

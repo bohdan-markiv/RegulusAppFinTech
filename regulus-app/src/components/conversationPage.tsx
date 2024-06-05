@@ -5,7 +5,7 @@ import logo from './visuals/logo_with_text.png';
 import loadingGif from './visuals/loading.gif';
 import attachedIcon from './visuals/attached.png';
 import FileUpload from './fileUpload';
-import s3 from './aws-config';
+import configureS3 from './aws-config';
 
 interface Message {
     text: string;
@@ -120,6 +120,7 @@ const DialoguePage: React.FC = () => {
         };
 
         try {
+            const s3 = await configureS3(id);
             await s3.upload(params).promise();
 
             // Send the file name to the API
