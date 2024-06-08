@@ -39,6 +39,9 @@ const DialoguePage: React.FC = () => {
 
     useEffect(() => {
         const fetchConversation = async () => {
+
+            // This hook is run when the dialogue page is loaded. It takes all the messages from the conversation
+            // and set up the chat name.
             try {
                 const response = await axios.get<Conversation>(`https://vjwir58s9d.execute-api.eu-central-1.amazonaws.com/prod/conversations/${id}`);
                 const sortedMessages = response.data.text.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
@@ -112,6 +115,8 @@ const DialoguePage: React.FC = () => {
     };
 
     const uploadFile = async (file: globalThis.File): Promise<CustomFile> => {
+
+        // This hook is sends the selected file to aws s3, and after that uploads it to the OpenAI storage.
         const params = {
             Bucket: 'conversations-admin',
             Key: file.name,
@@ -143,16 +148,20 @@ const DialoguePage: React.FC = () => {
     };
 
     const handleBackClick = () => {
+
+        // This is a navigation button.
         navigate('/');
     };
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        // This functionality allows for a custom chat title.
         setChatTitle(e.target.value);
     };
 
     const handleTitleBlur = async () => {
         try {
-            // Dummy API call to update the conversation title
+            // API call to update the conversation title
             await axios.post(`https://vjwir58s9d.execute-api.eu-central-1.amazonaws.com/prod/conversations/${id}`,
                 { title: chatTitle });
             console.log('Title updated');
@@ -163,6 +172,8 @@ const DialoguePage: React.FC = () => {
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+
+        // This hook allows to send message just by pressing enter.
         if (e.key === 'Enter') {
             e.preventDefault(); // Prevent the default action of adding a new line
             handleSendMessageButton();

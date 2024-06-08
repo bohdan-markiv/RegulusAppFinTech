@@ -7,6 +7,12 @@ logger.setLevel(logging.INFO)
 
 
 def get_secret():
+    """This function is responsible for getting the secret value - access Key and Secret access Key
+    from aws secret manager.
+
+    Returns:
+        dict: dictionary with secret values.
+    """
 
     secret_name = "aws-secret"
     region_name = "eu-central-1"
@@ -37,6 +43,14 @@ def get_secret():
 
 
 def transform_dynamodb_response(response):
+    """This function translates the type of response from DynamoDB into acceptable to a normal json.
+
+    Args:
+        response (json): scan of dynamo db result, which contains information about the conversation.
+
+    Returns:
+        json: transformed dynamo db response.
+    """
     messages = []
     if response['messages'] != []:
         for message in response['messages']['L']:
@@ -57,7 +71,17 @@ def transform_dynamodb_response(response):
 
 
 def lambda_handler(event, _):
+    """This lambda is responsible for getting all the details about the specific conversation - messages, id of 
+    the openai thread, id of the opean ai assistant and secret.
 
+    Args:
+        event (json): json file, which contains information about the Path Parameter. This parameter is used
+        to get an id of the conversation.
+        _ (json): the placeholder is necessary for context, also aws thing. Not used.
+
+    Returns:
+        json: response with either mistake code, or the the conversation details.
+    """
     logger.info(event)
     conversation_id = event["pathParameters"]["conversation_id"]
 

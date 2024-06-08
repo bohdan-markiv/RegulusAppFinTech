@@ -7,6 +7,14 @@ logger.setLevel(logging.INFO)
 
 
 def transform_dynamodb_response(response):
+    """This function translates the type of response from DynamoDB into acceptable to a normal json.
+
+    Args:
+        response (json): scan of dynamo db result, which contains information about the conversation.
+
+    Returns:
+        json: transformed dynamo db response.
+    """
     messages = []
     if response['messages'] != []:
         for message in response['messages']['L']:
@@ -27,7 +35,15 @@ def transform_dynamodb_response(response):
 
 
 def lambda_handler(event, _):
+    """This lambda is responsible for getting all the available conversations.
 
+    Args:
+        event (json): json event which is automatically attached by aws. Doesn't bring information.
+        _ (json): the placeholder is necessary for context, also aws thing. Not used.
+
+    Returns:
+        json: response with either mistake code, or the list with conversation ids.
+    """
     try:
 
         dynamodb = boto3.client('dynamodb', region_name='eu-central-1')
@@ -52,6 +68,7 @@ def lambda_handler(event, _):
 
         result = []
 
+        #  Here it is ensured, that only id and title of the conversations are passed, no other data.
         for item in items:
             result.append({
                 "id": item["id"],

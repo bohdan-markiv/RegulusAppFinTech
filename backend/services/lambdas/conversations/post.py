@@ -8,6 +8,15 @@ logger = logging.getLogger(__name__)
 
 
 def lambda_handler(event, _):
+    """This lambda is responsible for creating new conversation in DynamoDB.
+
+    Args:
+        event (json): json event which is automatically attached by aws. Doesn't bring information.
+        _ (json): the placeholder is necessary for context, also aws thing. Not used.
+
+    Returns:
+        json: response with either mistake code, or new conversation id.
+    """
 
     new_conversation_id = str(uuid.uuid4())
 

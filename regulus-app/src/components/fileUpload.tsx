@@ -9,6 +9,7 @@ interface FileUploadProps {
 
 const FileUpload: React.FC<FileUploadProps> = ({ selectedFile, setSelectedFile }) => {
 
+    // This function is responsible for uploading the selected file to AWS S3 bucket.
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setSelectedFile(e.target.files[0]);

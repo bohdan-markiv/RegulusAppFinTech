@@ -7,7 +7,16 @@ logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, _):
+    """This lambda is responsible for changing the title of the conversation.
 
+    Args:
+        event (json): json file, which contains information about the Path Parameter. This parameter is used
+        to get an id of the conversation, for which the title is changed.
+        _ (json): the placeholder is necessary for context, also aws thing. Not used.
+
+    Returns:
+        json: response with either mistake code, or the the title.
+    """
     logger.info(event)
     conversation_id = event["pathParameters"]["conversation_id"]
     event = json.loads(event['body'])

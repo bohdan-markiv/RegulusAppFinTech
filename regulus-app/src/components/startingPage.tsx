@@ -14,6 +14,8 @@ const ConversationsList: React.FC = () => {
 
     useEffect(() => {
         const fetchConversations = async () => {
+
+            // Get all the conversations for the opening page.
             try {
                 const response = await axios.get<Conversation[]>(`https://vjwir58s9d.execute-api.eu-central-1.amazonaws.com/prod/conversations`);
                 setConversations(response.data);
@@ -26,10 +28,14 @@ const ConversationsList: React.FC = () => {
     }, []);
 
     const handleConversationClick = (id: string) => {
+
+        // This hook allows to navigate to the specific conversation.
         navigate(`/conversation/${id}`);
     };
 
     const handleNewConversationClick = async () => {
+
+        // This hook creates new conversation, and opens it.
         try {
             const response = await axios.post<string>(`https://vjwir58s9d.execute-api.eu-central-1.amazonaws.com/prod/conversations`);
             const newConversationId = response.data;
